@@ -1,96 +1,78 @@
-# Cervantes Deployment Guide (Vercel)
+# Cervantes Deployment Notes
 
-This project is ready for production deployment on Vercel.
+## Required Environment Variables
 
-## 1) Deploy to Vercel
+Set these in Vercel for Production and any Preview environments you want to test fully.
 
-1. Push your latest code to GitHub.
-2. In Vercel, click **Add New... > Project**.
-3. Import `maxnilsohare/cervantes`.
-4. Framework should auto-detect as **Next.js**.
-5. Build settings can remain default:
-   - Build Command: `npm run build`
-   - Output: `.next`
-6. Add environment variables (see next section) before first deploy.
-7. Click **Deploy**.
-
-## 2) Required Environment Variables
-
-Add these in **Vercel > Project > Settings > Environment Variables** for Production (and Preview if needed):
+Public browser-safe variables:
 
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
 - `NEXT_PUBLIC_SANITY_PROJECT_ID`
 - `NEXT_PUBLIC_SANITY_DATASET`
 - `NEXT_PUBLIC_SANITY_API_VERSION`
+- `NEXT_PUBLIC_ENABLE_STUDIO=false`
 
-Recommended values:
+Server-only variables:
 
-- `NEXT_PUBLIC_SANITY_DATASET=production`
-- `NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01`
+- `ENABLE_STUDIO=false`
+- `ENQUIRY_MAIL_PROVIDER=resend` or `sendgrid`
+- `ENQUIRY_RECIPIENT_EMAIL=hello@cervantesadvisory.com`
+- `ENQUIRY_FROM_EMAIL=Cervantes Website <noreply@your-domain.com>`
+- `RESEND_API_KEY` or `SENDGRID_API_KEY`
 
-Notes:
+Never prefix provider API keys with `NEXT_PUBLIC_`.
 
-- Do not hardcode API keys in source files.
-- Keep private tokens/server secrets out of client code.
-- This app only uses public `NEXT_PUBLIC_*` values client-side where needed.
+## Vercel Deployment
 
-## 3) Google Maps Production Restrictions
+1. Push the latest branch to GitHub.
+2. Import the project into Vercel as a Next.js app.
+3. Keep default build settings:
+   - Build command: `npm run build`
+   - Output: `.next`
+4. Add the environment variables above.
+5. Deploy.
+6. After changing env vars, redeploy the latest deployment.
 
-Use the same API key in `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, and in Google Cloud:
+## Google Maps
 
-1. Go to **Google Cloud Console > APIs & Services > Credentials**.
-2. Open your Maps JavaScript key.
-3. Under **Application restrictions**, choose **HTTP referrers (web sites)**.
-4. Add allowed referrers for your domains, for example:
-   - `https://your-domain.com/*`
-   - `https://www.your-domain.com/*`
-   - `https://*.vercel.app/*` (optional for previews)
-5. Under **API restrictions**, allow at least:
-   - Maps JavaScript API
-   - Places API (if used by your map/search flows)
-6. Save changes.
+Restrict `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in Google Cloud before production:
 
-The property map already includes a graceful fallback card when Maps fails or key/config is missing.
+- Application restriction: HTTP referrers.
+- Add production domains such as `https://your-domain.com/*` and `https://www.your-domain.com/*`.
+- Add Vercel preview domains only if previews need maps.
+- API restriction: Maps JavaScript API. Add Places API only if a future feature needs it.
 
-## 4) Sanity Production Setup
+The property map uses standard `google.maps.Map` and `google.maps.Marker`, and falls back gracefully when the key is missing or authorization fails.
 
-This app embeds Studio at `/studio` and is guarded for missing env vars.
+## Sanity Studio
 
-If Sanity vars are missing, `/studio` shows a setup screen instead of crashing.
+`/studio` is disabled by default and returns a clean 404 unless Studio is explicitly enabled.
 
-To enable Studio and content APIs in production:
+To enable it:
 
-1. In [Sanity Manage](https://www.sanity.io/manage), open your project.
-2. Go to **API > CORS Origins**.
-3. Add your production and preview origins, for example:
-   - `https://your-domain.com`
-   - `https://www.your-domain.com`
-   - `https://your-project.vercel.app`
-4. Save CORS settings.
-5. Ensure Vercel env vars are set:
-   - `NEXT_PUBLIC_SANITY_PROJECT_ID`
-   - `NEXT_PUBLIC_SANITY_DATASET`
-   - `NEXT_PUBLIC_SANITY_API_VERSION`
+1. Set `ENABLE_STUDIO=true` in the target environment.
+2. Optionally set `NEXT_PUBLIC_ENABLE_STUDIO=true` for local/browser-visible feature checks.
+3. Ensure Sanity project ID, dataset, and API version are set.
+4. Add the production and preview origins in Sanity CORS settings.
 
-## 5) Redeploy After Env Changes
+Leave both Studio flags false for a public launch unless the client intentionally wants Studio available.
 
-After changing env vars in Vercel:
+## Enquiries
 
-1. Go to **Vercel > Deployments**.
-2. Open latest deployment.
-3. Click **Redeploy** (or push a new commit).
+Contact and property enquiry forms submit through Next.js Server Actions.
 
-You can also trigger a fresh deploy by running:
+Email delivery is server-only and supports:
 
-```bash
-git commit --allow-empty -m "Trigger redeploy"
-git push
-```
+- Resend with `RESEND_API_KEY`
+- SendGrid with `SENDGRID_API_KEY`
 
-## 6) Verification Checklist
+Submitted emails include source page, sender name, email, phone, message, and property title/reference/slug when applicable. If no provider is configured, the form shows an error instead of pretending the enquiry was sent.
 
-- `npm run lint` passes
-- `npm run build` passes
-- `/studio` loads in production when Sanity env vars are present
-- Property detail map works with production Google Maps key
-- Map fallback UI appears gracefully if Maps is unavailable
+## Pre-Launch Checks
+
+- `npm run lint`
+- `npm run build`
+- Confirm the contact form sends to `ENQUIRY_RECIPIENT_EMAIL`.
+- Confirm property enquiry emails include property metadata.
+- Confirm `/studio` returns 404 when disabled.
+- Confirm maps work on the production domain after key restrictions are applied.

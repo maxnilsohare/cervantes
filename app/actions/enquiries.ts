@@ -1,5 +1,7 @@
 "use server";
 
+import { sendEnquiryEmail, type EnquiryLead } from "@/app/lib/enquiries/mailer";
+
 export type EnquiryFormState = {
   status: "idle" | "success" | "error";
   message: string;
@@ -44,7 +46,7 @@ export async function submitContactEnquiry(
     return validationError;
   }
 
-  const payload = {
+  const payload: EnquiryLead = {
     source: textField(formData, "source") || "contact-page",
     name,
     email,
@@ -54,7 +56,14 @@ export async function submitContactEnquiry(
     submittedAt: new Date().toISOString(),
   };
 
-  console.info("[Cervantes contact enquiry]", payload);
+  const result = await sendEnquiryEmail(payload);
+
+  if (!result.ok) {
+    return {
+      status: "error",
+      message: result.message,
+    };
+  }
 
   return {
     status: "success",
@@ -74,7 +83,7 @@ export async function submitPropertyEnquiry(
     return validationError;
   }
 
-  const payload = {
+  const payload: EnquiryLead = {
     source: textField(formData, "source") || "property-detail",
     mode: textField(formData, "mode"),
     name,
@@ -88,7 +97,14 @@ export async function submitPropertyEnquiry(
     submittedAt: new Date().toISOString(),
   };
 
-  console.info("[Cervantes property enquiry]", payload);
+  const result = await sendEnquiryEmail(payload);
+
+  if (!result.ok) {
+    return {
+      status: "error",
+      message: result.message,
+    };
+  }
 
   return {
     status: "success",
