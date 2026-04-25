@@ -18,15 +18,9 @@ export function PropertyGallery({ title, images }: PropertyGalleryProps) {
             alt={`${title} main view`}
             className="object-cover"
             sizes="100vw"
-            priority
+            preload
           />
         </div>
-        <button
-          type="button"
-          className="inline-flex w-fit border border-[var(--color-dark-gold)]/70 px-5 py-2.5 text-[11px] font-medium tracking-[0.18em] text-[var(--color-dark-gold)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)]"
-        >
-          View Gallery
-        </button>
       </div>
 
       <div className="hidden gap-4 lg:grid lg:grid-cols-12">
@@ -36,7 +30,7 @@ export function PropertyGallery({ title, images }: PropertyGalleryProps) {
             alt={`${title} hero view`}
             className="object-cover transition duration-700 hover:scale-[1.02]"
             sizes="(max-width: 1280px) 66vw, 900px"
-            priority
+            preload
           />
         </div>
 

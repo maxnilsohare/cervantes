@@ -2,18 +2,37 @@
 
 import Image from "next/image";
 import type { Property } from "@/app/data/properties";
-import { useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
+import {
+  submitPropertyEnquiry,
+  type EnquiryFormState,
+} from "@/app/actions/enquiries";
+import { siteConfig } from "@/app/config/site";
 
 type EnquiryCardProps = {
   property: Property;
+};
+
+const initialEnquiryState: EnquiryFormState = {
+  status: "idle",
+  message: "",
 };
 
 export function EnquiryCard({ property }: EnquiryCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageErrored, setImageErrored] = useState(false);
   const [modalMode, setModalMode] = useState<"viewing" | "contact">("viewing");
-  const advisorWhatsAppNumber =
-    process.env.NEXT_PUBLIC_ADVISOR_WHATSAPP_NUMBER ?? property.agentPhone;
+  const [formState, formAction, isPending] = useActionState(
+    submitPropertyEnquiry,
+    initialEnquiryState
+  );
+  const advisorPhone = property.agentPhone || siteConfig.contact.advisorPhone;
+  const advisorPhoneHref =
+    advisorPhone === siteConfig.contact.advisorPhone
+      ? siteConfig.contact.advisorPhoneHref
+      : advisorPhone.replace(/[^\d+]/g, "");
+  const advisorEmail = property.agentEmail || siteConfig.contact.advisorEmail;
+  const advisorWhatsAppNumber = siteConfig.contact.whatsappHrefNumber;
   const advisorInitials = useMemo(() => {
     return property.agentName
       .split(" ")
@@ -23,12 +42,11 @@ export function EnquiryCard({ property }: EnquiryCardProps) {
       .join("");
   }, [property.agentName]);
   const whatsappHref = useMemo(() => {
-    const sanitizedNumber = advisorWhatsAppNumber.replace(/[^\d]/g, "");
     const intro = `Hello Jennifer, I'm interested in ${property.title}`;
     const message = property.reference?.trim()
       ? `${intro}, Ref ${property.reference}. Could you send me more details?`
       : `${intro}. Could you send me more details?`;
-    return `https://wa.me/${sanitizedNumber}?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${advisorWhatsAppNumber}?text=${encodeURIComponent(message)}`;
   }, [advisorWhatsAppNumber, property.reference, property.title]);
 
   useEffect(() => {
@@ -93,16 +111,16 @@ export function EnquiryCard({ property }: EnquiryCardProps) {
               {property.agentName}
             </p>
             <a
-              href={`tel:${property.agentPhone}`}
+              href={`tel:${advisorPhoneHref}`}
               className="mt-1 block text-sm text-[var(--color-olive)] hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
             >
-              {property.agentPhone}
+              {advisorPhone}
             </a>
             <a
-              href={`mailto:${property.agentEmail}`}
+              href={`mailto:${advisorEmail}`}
               className="block truncate text-sm text-[var(--color-olive)] hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
             >
-              {property.agentEmail}
+              {advisorEmail}
             </a>
           </div>
         </div>
@@ -177,33 +195,65 @@ export function EnquiryCard({ property }: EnquiryCardProps) {
               </button>
             </div>
 
-            <form className="mt-4.5 space-y-3" onSubmit={(event) => event.preventDefault()}>
+            <form action={formAction} className="mt-4.5 space-y-3">
+              <input type="hidden" name="source" value="property-detail" />
+              <input type="hidden" name="mode" value={modalMode} />
+              <input type="hidden" name="propertyTitle" value={property.title} />
+              <input type="hidden" name="propertyReference" value={property.reference} />
+              <input type="hidden" name="propertySlug" value={property.slug} />
+              <input type="hidden" name="advisorEmail" value={advisorEmail} />
               <input
+                name="name"
                 type="text"
                 placeholder="Name"
+                aria-label="Name"
+                autoComplete="name"
+                required
                 className="h-11 w-full border border-[var(--color-gold)]/30 bg-[var(--color-ivory)] px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/35"
               />
               <input
+                name="email"
                 type="email"
                 placeholder="Email"
+                aria-label="Email"
+                autoComplete="email"
+                required
                 className="h-11 w-full border border-[var(--color-gold)]/30 bg-[var(--color-ivory)] px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/35"
               />
               <input
+                name="phone"
                 type="tel"
                 placeholder="Phone"
+                aria-label="Phone"
+                autoComplete="tel"
                 className="h-11 w-full border border-[var(--color-gold)]/30 bg-[var(--color-ivory)] px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/35"
               />
               <textarea
+                name="message"
                 placeholder={`I'm interested in ${property.title}.`}
+                aria-label="Message"
                 rows={4}
                 className="w-full border border-[var(--color-gold)]/30 bg-[var(--color-ivory)] px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/35"
               />
+              <p
+                aria-live="polite"
+                className={`min-h-5 text-sm ${
+                  formState.status === "error"
+                    ? "text-red-700"
+                    : formState.status === "success"
+                      ? "text-[var(--color-deep-olive)]"
+                      : "text-[var(--color-olive)]/80"
+                }`}
+              >
+                {formState.message}
+              </p>
               <div className="flex flex-col gap-2.5 sm:flex-row">
                 <button
                   type="submit"
-                  className="w-full border border-[var(--color-gold)] bg-[var(--color-gold)] px-4 py-3 text-[11px] font-semibold tracking-[0.18em] text-[var(--color-deep-olive)] uppercase transition duration-300 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
+                  disabled={isPending}
+                  className="w-full border border-[var(--color-gold)] bg-[var(--color-gold)] px-4 py-3 text-[11px] font-semibold tracking-[0.18em] text-[var(--color-deep-olive)] uppercase transition duration-300 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] disabled:cursor-wait disabled:opacity-70"
                 >
-                  Send Enquiry
+                  {isPending ? "Sending..." : "Send Enquiry"}
                 </button>
                 <button
                   type="button"

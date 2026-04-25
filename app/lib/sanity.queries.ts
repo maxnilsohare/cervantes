@@ -1,0 +1,5 @@
+export {
+  SANITY_PROPERTIES_QUERY,
+  SANITY_PROPERTY_BY_SLUG_QUERY,
+  SANITY_PROPERTY_FIELDS,
+} from "@/app/lib/sanity/queries";

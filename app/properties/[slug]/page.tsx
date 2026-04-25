@@ -17,6 +17,10 @@ type PropertyDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+function toTelHref(phone: string) {
+  return phone.replace(/[^\d+]/g, "");
+}
+
 export async function generateStaticParams() {
   const properties = await getAllProperties();
   return properties.map((property) => ({ slug: property.slug }));
@@ -35,6 +39,21 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
   return {
     title: `${property.title} | Cervantes`,
     description: property.shortDescription,
+    alternates: {
+      canonical: `/properties/${property.slug}`,
+    },
+    openGraph: {
+      title: `${property.title} | Cervantes`,
+      description: property.shortDescription,
+      url: `/properties/${property.slug}`,
+      images: [property.heroImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${property.title} | Cervantes`,
+      description: property.shortDescription,
+      images: [property.heroImage],
+    },
   };
 }
 
@@ -113,7 +132,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               Enquire
             </a>
             <a
-              href={`tel:${property.agentPhone}`}
+              href={`tel:${toTelHref(property.agentPhone)}`}
               className="inline-flex items-center justify-center border border-[var(--color-dark-gold)]/70 px-4 py-3 text-[11px] font-medium tracking-[0.16em] text-[var(--color-dark-gold)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)]"
             >
               Call

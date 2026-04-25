@@ -1,5 +1,6 @@
-import { ImageWithFallback } from "@/app/components/ImageWithFallback";
+import Image from "next/image";
 import { SearchBar } from "@/app/components/SearchBar";
+import { ButtonLink } from "@/app/components/ui/ButtonLink";
 
 export function Hero() {
   return (
@@ -7,10 +8,11 @@ export function Hero() {
       className="relative isolate flex min-h-[78vh] flex-col items-center justify-center overflow-visible px-4 py-24 pb-16 text-center sm:min-h-[82vh] sm:px-6 sm:py-28 sm:pb-20 md:min-h-[92vh] md:py-36 md:pb-24 lg:min-h-[94vh] lg:pb-28"
       aria-label="Hero"
     >
-      <ImageWithFallback
+      <Image
         src="/images/hero.jpg"
         alt="Elegant Spanish luxury villa exterior at sunset"
-        priority
+        preload
+        fill
         className="absolute inset-0 scale-[1.04] object-cover object-center"
         sizes="100vw"
       />
@@ -25,18 +27,19 @@ export function Hero() {
           Local Knowledge. International Expertise.
         </p>
         <div className="mt-10 flex w-full flex-col items-center justify-center gap-3 sm:mt-11 sm:w-auto sm:flex-row sm:gap-4">
-          <a
+          <ButtonLink
             href="#properties"
-            className="inline-flex w-full justify-center border border-[var(--color-gold)] bg-[var(--color-gold)] px-7 py-3 text-[11px] font-medium tracking-[0.2em] text-[var(--color-deep-green)] uppercase hover:-translate-y-0.5 hover:bg-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)] sm:w-auto"
+            className="w-full focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)] sm:w-auto"
           >
             View Properties
-          </a>
-          <a
-            href="#contact"
-            className="inline-flex w-full justify-center border border-[var(--color-gold)]/80 px-7 py-3 text-[11px] font-medium tracking-[0.2em] text-[var(--color-ivory)] uppercase hover:-translate-y-0.5 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)] sm:w-auto"
+          </ButtonLink>
+          <ButtonLink
+            href="/contact"
+            variant="outline"
+            className="w-full focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)] sm:w-auto"
           >
             Book a Consultation
-          </a>
+          </ButtonLink>
         </div>
       </div>
 

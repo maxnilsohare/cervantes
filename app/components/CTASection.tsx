@@ -1,4 +1,5 @@
-import { ImageWithFallback } from "@/app/components/ImageWithFallback";
+import Image from "next/image";
+import { ButtonLink } from "@/app/components/ui/ButtonLink";
 
 type CTASectionProps = {
   id?: string;
@@ -26,9 +27,10 @@ export function CTASection({
       id={id}
       className="relative isolate my-16 overflow-hidden px-5 py-20 sm:px-6 lg:my-18 lg:px-10 lg:py-24"
     >
-      <ImageWithFallback
+      <Image
         src={imageSrc}
         alt={imageAlt}
+        fill
         className="absolute inset-0 object-cover object-center"
         sizes="100vw"
       />
@@ -40,12 +42,12 @@ export function CTASection({
         <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-[var(--color-cream)]/90 md:text-lg">
           {description}
         </p>
-        <a
+        <ButtonLink
           href={buttonHref}
-          className="mt-8 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-7 py-3 text-[11px] font-medium tracking-[0.2em] text-[var(--color-deep-green)] uppercase hover:-translate-y-0.5 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)]"
+          className="mt-8 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)]"
         >
           {buttonLabel}
-        </a>
+        </ButtonLink>
       </div>
     </section>
   );

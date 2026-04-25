@@ -1,3 +1,5 @@
+import { siteConfig } from "@/app/config/site";
+
 export type Property = {
   slug: string;
   title: string;
@@ -256,9 +258,9 @@ export const properties: Property[] = [
     ],
     reasonToView: "Designer turnkey villa with strong lifestyle-rental balance.",
     reference: "ST5043",
-    agentName: "Jennifer Fogelberg",
-    agentPhone: "+34 951 000 000",
-    agentEmail: "jennifer@cervantes.com",
+    agentName: siteConfig.contact.advisorName,
+    agentPhone: siteConfig.contact.advisorPhone,
+    agentEmail: siteConfig.contact.advisorEmail,
   },
   {
     slug: "beachfront-duplex-penthouse-torre-bermeja",
@@ -445,9 +447,9 @@ export const properties: Property[] = [
     ],
     reasonToView: "Rare beachfront duplex with rooftop wellness and direct shore access.",
     reference: "MAB83000379",
-    agentName: "Jennifer Fogelberg",
-    agentPhone: "+34 952 100 220",
-    agentEmail: "jennifer@cervantes.com",
+    agentName: siteConfig.contact.advisorName,
+    agentPhone: siteConfig.contact.advisorPhone,
+    agentEmail: siteConfig.contact.advisorEmail,
   },
   {
     slug: "villa-madrisa-nueva-andalucia",
@@ -633,9 +635,9 @@ export const properties: Property[] = [
     ],
     reasonToView: "Private Nueva Andalucia villa with greenery, pool, and prime golf access.",
     reference: "SV2298",
-    agentName: "Jennifer Fogelberg",
-    agentPhone: "+34 951 330 870",
-    agentEmail: "jennifer@cervantes.com",
+    agentName: siteConfig.contact.advisorName,
+    agentPhone: siteConfig.contact.advisorPhone,
+    agentEmail: siteConfig.contact.advisorEmail,
   },
 ];
 

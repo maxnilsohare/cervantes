@@ -70,6 +70,16 @@ export function PropertyMediaShowcase({
     () => KEN_BURNS_PROFILES[activeIndex % KEN_BURNS_PROFILES.length],
     [activeIndex]
   );
+  const visibleImageIndexes = (() => {
+    if (images.length <= 3) {
+      return images.map((_, index) => index);
+    }
+
+    const previousIndex = (activeIndex - 1 + images.length) % images.length;
+    const nextIndex = (activeIndex + 1) % images.length;
+
+    return Array.from(new Set([previousIndex, activeIndex, nextIndex])).sort((a, b) => a - b);
+  })();
   const motionProgress = Math.min(1, elapsedMs / AUTOPLAY_INTERVAL_MS);
 
   function goNext() {
@@ -87,10 +97,11 @@ export function PropertyMediaShowcase({
   }
 
   return (
-    <section className="mt-10 lg:mt-12">
+    <section id="property-photos" className="mt-10 lg:mt-12">
       <div className="relative isolate">
         <div className="relative h-[360px] overflow-hidden border border-[var(--color-gold)]/25 bg-[var(--color-deep-olive)] sm:h-[470px] lg:h-[650px]">
-          {images.map((image, index) => {
+          {visibleImageIndexes.map((index) => {
+            const image = images[index];
             const active = index === activeIndex;
             return (
               <div
@@ -105,7 +116,8 @@ export function PropertyMediaShowcase({
                   src={image}
                   alt={`${title} photo ${index + 1}`}
                   fill
-                  priority={index === 0}
+                  preload={index === 0}
+                  loading={index === 0 ? undefined : active ? "eager" : "lazy"}
                   sizes="100vw"
                   className="object-cover transition-opacity ease-in-out"
                   style={{
@@ -133,16 +145,12 @@ export function PropertyMediaShowcase({
           })}
 
           <div className="absolute right-4 top-4 z-20 flex items-center gap-1.5 sm:right-6 sm:top-6 sm:gap-2">
-            {["Save", "Share", "Enquire"].map((label) => (
-              <button
-                key={label}
-                type="button"
-                aria-label={label}
-                className="border border-[var(--color-ivory)]/40 bg-[var(--color-ivory)]/88 px-2.5 py-1.5 text-[9px] font-semibold tracking-[0.14em] text-[var(--color-deep-olive)] uppercase backdrop-blur-sm transition hover:border-[var(--color-gold)] hover:bg-[var(--color-gold)]/92 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] sm:px-3 sm:py-2 sm:text-[10px]"
-              >
-                {label}
-              </button>
-            ))}
+            <a
+              href="#enquiry"
+              className="border border-[var(--color-ivory)]/40 bg-[var(--color-ivory)]/88 px-2.5 py-1.5 text-[9px] font-semibold tracking-[0.14em] text-[var(--color-deep-olive)] uppercase backdrop-blur-sm transition hover:border-[var(--color-gold)] hover:bg-[var(--color-gold)]/92 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] sm:px-3 sm:py-2 sm:text-[10px]"
+            >
+              Enquire
+            </a>
           </div>
 
           <div className="absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-between px-3 sm:px-5">
@@ -181,15 +189,18 @@ export function PropertyMediaShowcase({
                 {bedrooms} Bedrooms · {bathrooms} Bathrooms · {builtSize} Built
               </p>
               <div className="flex items-center gap-2 sm:justify-end">
-                {["Photos", "Map", "Street View", "Floor Plan"].map((label) => (
-                  <button
-                    key={label}
-                    type="button"
-                    aria-label={label}
+                {[
+                  { label: "Photos", href: "#property-photos" },
+                  { label: "Map", href: "#location" },
+                  { label: "Enquire", href: "#enquiry" },
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
                     className="rounded-md border border-[var(--color-ivory)]/45 bg-[var(--color-ivory)]/92 px-2.5 py-1.5 text-[9px] font-semibold tracking-[0.06em] text-[var(--color-deep-olive)] uppercase transition-all duration-300 ease-out hover:-translate-y-[1px] hover:bg-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] sm:px-3 sm:py-2 sm:text-[10px]"
                   >
-                    {label}
-                  </button>
+                    {item.label}
+                  </a>
                 ))}
               </div>
             </div>

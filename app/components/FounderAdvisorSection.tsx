@@ -1,33 +1,21 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
 export function FounderAdvisorSection() {
-  const [imageError, setImageError] = useState(false);
-
   return (
-    <section className="bg-[var(--color-cream)] px-4 py-16 sm:px-6 sm:py-18 lg:px-10 lg:py-22">
+    <section id="jennifer" className="bg-[var(--color-cream)] px-4 py-16 sm:px-6 sm:py-18 lg:px-10 lg:py-22">
       <div className="mx-auto grid w-full max-w-7xl gap-8 border border-[var(--color-gold)]/20 bg-[var(--color-ivory)] p-5 sm:p-7 lg:grid-cols-[minmax(290px,0.85fr)_minmax(0,1fr)] lg:gap-10 lg:p-10">
         <div className="relative border border-[var(--color-gold)]/25 bg-[var(--color-cream)] p-3 sm:p-4">
-          {!imageError ? (
-            <div className="mx-auto w-full max-w-[420px] overflow-hidden border border-[var(--color-gold)]/18 bg-[var(--color-ivory)]">
-              <Image
-                src="/images/founder.jpg"
-                alt="Jennifer Fogelberg, founder of Cervantes"
-                width={1100}
-                height={1460}
-                sizes="(max-width: 1024px) 100vw, 36vw"
-                className="h-auto w-full object-cover object-center"
-                onError={() => setImageError(true)}
-              />
-            </div>
-          ) : (
-            <div className="grid h-[300px] place-items-center px-6 text-center text-sm tracking-[0.08em] text-[var(--color-olive)] uppercase sm:h-[360px]">
-              Founder image coming soon
-            </div>
-          )}
+          <div className="mx-auto w-full max-w-[420px] overflow-hidden border border-[var(--color-gold)]/18 bg-[var(--color-ivory)]">
+            <Image
+              src="/images/founder.jpg"
+              alt="Jennifer Fogelberg, founder of Cervantes"
+              width={1100}
+              height={1460}
+              sizes="(max-width: 1024px) 100vw, 36vw"
+              className="h-auto w-full object-cover object-center"
+            />
+          </div>
         </div>
 
         <div className="lg:pr-5">
@@ -65,14 +53,14 @@ export function FounderAdvisorSection() {
           </ul>
 
           <div className="mt-7 flex flex-wrap items-center gap-3.5">
-            <a
-              href="#contact"
+            <Link
+              href="/contact"
               className="inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-3 text-[11px] font-medium tracking-[0.2em] text-[var(--color-deep-olive)] uppercase transition hover:-translate-y-0.5 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
             >
               Book a Private Consultation
-            </a>
+            </Link>
             <Link
-              href="/#about"
+              href="/about"
               className="inline-flex px-2 py-2 text-[11px] font-medium tracking-[0.16em] text-[var(--color-dark-gold)] uppercase transition hover:text-[var(--color-deep-olive)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
             >
               Learn more about Cervantes

@@ -17,6 +17,23 @@ export const metadata: Metadata = {
   title: "Buying in Spain | Cervantes",
   description:
     "A calm, step-by-step buying guide for international clients purchasing property on the Costa del Sol.",
+  alternates: {
+    canonical: "/buying-in-spain",
+  },
+  openGraph: {
+    title: "Buying in Spain | Cervantes",
+    description:
+      "A calm, step-by-step buying guide for international clients purchasing property on the Costa del Sol.",
+    url: "/buying-in-spain",
+    images: ["/images/coast.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Buying in Spain | Cervantes",
+    description:
+      "A calm, step-by-step buying guide for international clients purchasing property on the Costa del Sol.",
+    images: ["/images/coast.jpg"],
+  },
 };
 
 const timelineSteps = [
@@ -110,7 +127,7 @@ export default function BuyingInSpainPage() {
                   fill
                   className="object-cover object-center"
                   sizes="100vw"
-                  priority
+                  preload
                 />
                 <div className="absolute inset-0 bg-[var(--color-deep-olive)]/45" aria-hidden="true" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
@@ -124,7 +141,7 @@ export default function BuyingInSpainPage() {
                     A calm, step-by-step guide for international buyers on the Costa del Sol.
                   </p>
                   <Link
-                    href="/#contact"
+                    href="/contact"
                     className="mt-6 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-2.5 text-[11px] tracking-[0.2em] text-[var(--color-deep-olive)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
                   >
                     Book a consultation
@@ -254,7 +271,7 @@ export default function BuyingInSpainPage() {
           <section className="mx-4 mt-14 border border-[var(--color-gold)]/25 bg-[var(--color-deep-olive)] px-6 py-10 text-center sm:mx-6 sm:px-10 lg:mx-10">
             <h2 className="font-serif text-3xl text-[var(--color-ivory)]">Begin your search with clarity.</h2>
             <Link
-              href="/#contact"
+              href="/contact"
               className="mt-6 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-2.5 text-[11px] tracking-[0.2em] text-[var(--color-deep-olive)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
             >
               Book a consultation

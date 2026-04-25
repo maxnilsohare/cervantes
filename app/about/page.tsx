@@ -9,6 +9,23 @@ export const metadata: Metadata = {
   title: "Company | Cervantes",
   description:
     "Founder-led boutique property advisory on the Costa del Sol, combining local knowledge, international communication, and personal guidance.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "Company | Cervantes",
+    description:
+      "Founder-led boutique property advisory on the Costa del Sol, combining local knowledge, international communication, and personal guidance.",
+    url: "/about",
+    images: ["/images/coast.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Company | Cervantes",
+    description:
+      "Founder-led boutique property advisory on the Costa del Sol, combining local knowledge, international communication, and personal guidance.",
+    images: ["/images/coast.jpg"],
+  },
 };
 
 const languageBadges = [
@@ -79,7 +96,7 @@ export default function CompanyPage() {
                   fill
                   className="object-cover"
                   sizes="100vw"
-                  priority
+                  preload
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-deep-olive)]/82 via-[var(--color-deep-olive)]/52 to-[var(--color-deep-olive)]/28" aria-hidden="true" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-9 lg:p-12">
@@ -219,7 +236,7 @@ export default function CompanyPage() {
                 Speak directly with Jennifer about your search, sale or next move on the Costa del Sol.
               </p>
               <Link
-                href="/#contact"
+                href="/contact"
                 className="mt-6 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-2.5 text-[11px] tracking-[0.2em] text-[var(--color-deep-olive)] uppercase transition duration-300 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
               >
                 Book a consultation

@@ -1,47 +1,63 @@
 import { getPropertyBySlug as getFallbackPropertyBySlug, properties as fallbackProperties, type Property } from "@/app/data/properties";
+import { siteConfig } from "@/app/config/site";
 import { isSanityConfigured, sanityClient } from "@/app/lib/sanity/client";
-import { SANITY_PROPERTIES_QUERY, SANITY_PROPERTY_BY_SLUG_QUERY } from "@/app/lib/sanity/queries";
+import { SANITY_PROPERTIES_QUERY, SANITY_PROPERTY_BY_SLUG_QUERY } from "@/app/lib/sanity.queries";
 
 type SanityProperty = {
   title?: string;
   slug?: string;
-  status?: "forSale" | "reserved" | "sold" | "offMarket";
+  status?: "available" | "reserved" | "sold" | "private";
   reference?: string;
   price?: string;
   location?: string;
-  area?: string;
   propertyType?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
   bedrooms?: number;
   bathrooms?: number;
   builtSize?: string;
   terraceSize?: string;
   plotSize?: string;
+  orientation?: string;
+  pool?: boolean;
+  parking?: string;
   heroImageUrl?: string;
+  heroImageAlt?: string;
   galleryImageUrls?: string[];
+  galleryImageAlts?: (string | null)[];
+  floorPlanImageUrl?: string;
+  floorPlanImageAlt?: string;
+  videoUrl?: string;
   shortDescription?: string;
-  fullDescription?: string;
-  cervantesView?: string;
-  whatsSpecial?: string[];
-  features?: string[];
+  description?: string;
+  keyFeatures?: string[];
   lifestyleHighlights?: string[];
-  latitude?: number;
-  longitude?: number;
-  nearbyLifestyle?: { label?: string; time?: string; mode?: string; description?: string }[];
+  nearbyEssentials?: {
+    label?: string;
+    category?: string;
+    minutesByCar?: number;
+    iconType?: string;
+  }[];
+  estimatedIBI?: string;
   communityFees?: number;
+  buyingCostNotes?: string;
   advisorName?: string;
   advisorPhone?: string;
   advisorEmail?: string;
-  metaTitle?: string;
-  metaDescription?: string;
+  advisorImageUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImageUrl?: string;
+  similarPropertySlugs?: string[];
   featured?: boolean;
-  showOnHomepage?: boolean;
   orderRank?: number;
 };
 
 function mapStatus(status?: SanityProperty["status"]) {
   if (status === "reserved") return "Reserved";
   if (status === "sold") return "Sold";
-  if (status === "offMarket") return "Off Market";
+  if (status === "private") return "Private";
   return "For Sale";
 }
 
@@ -52,7 +68,7 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
     slug: doc.slug,
     title: doc.title,
     location: doc.location,
-    area: doc.area || doc.location,
+    area: doc.location,
     price: doc.price,
     bedrooms: Number(doc.bedrooms ?? 0),
     bathrooms: Number(doc.bathrooms ?? 0),
@@ -64,8 +80,8 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
     heroImage: doc.heroImageUrl || "/images/property-1.jpg",
     galleryImages: doc.galleryImageUrls?.length ? doc.galleryImageUrls : [doc.heroImageUrl || "/images/property-1.jpg"],
     shortDescription: doc.shortDescription || "Property details available on request.",
-    fullDescription: doc.fullDescription || doc.shortDescription || "Property details available on request.",
-    features: doc.features?.length ? doc.features : ["Details available on request"],
+    fullDescription: doc.description || doc.shortDescription || "Property details available on request.",
+    features: doc.keyFeatures?.length ? doc.keyFeatures : ["Details available on request"],
     amenities: doc.lifestyleHighlights?.length ? doc.lifestyleHighlights : ["Lifestyle details available on request"],
     marketEstimate: doc.price,
     marketRangeLow: doc.price,
@@ -79,20 +95,21 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
     longitude: Number(doc.longitude ?? -4.9),
     nearbyValues: [],
     communityFees: doc.communityFees,
-    specialHighlights: doc.whatsSpecial?.length ? doc.whatsSpecial : ["Boutique listing", "Lifestyle-led location"],
+    specialHighlights:
+      doc.lifestyleHighlights?.length ? doc.lifestyleHighlights : ["Boutique listing", "Lifestyle-led location"],
     propertyDetails: {
       interior: [
         { label: "Bedrooms", value: String(doc.bedrooms ?? "N/A") },
         { label: "Bathrooms", value: String(doc.bathrooms ?? "N/A") },
         { label: "Built size", value: doc.builtSize || "N/A" },
-        { label: "Heating / cooling", value: "On request" },
+        { label: "Orientation", value: doc.orientation || "On request" },
         { label: "Furnishing status", value: "On request" },
       ],
       exterior: [
         { label: "Terrace size", value: doc.terraceSize || "N/A" },
-        { label: "Pool", value: "On request" },
+        { label: "Pool", value: typeof doc.pool === "boolean" ? (doc.pool ? "Yes" : "No") : "On request" },
         { label: "Garden", value: "On request" },
-        { label: "Orientation", value: "On request" },
+        { label: "Parking", value: doc.parking || "On request" },
       ],
       community: [
         { label: "Gated community", value: "On request" },
@@ -102,8 +119,8 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
       ],
       costsAndFees: [
         { label: "Community fees", value: doc.communityFees ? `€${doc.communityFees} / month` : "On request" },
-        { label: "IBI estimate", value: "On request" },
-        { label: "Garbage tax", value: "On request" },
+        { label: "IBI estimate", value: doc.estimatedIBI || "On request" },
+        { label: "Cost notes", value: doc.buyingCostNotes || "On request" },
         { label: "Estimated purchase costs", value: "10-12% of purchase price" },
       ],
       legalAndOwnership: [
@@ -120,33 +137,42 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
         { label: "Schools", value: "On request" },
       ],
     },
-    nearbyLifestyle:
-      doc.nearbyLifestyle
-        ?.filter((item) => item?.label && item?.time)
-        .map((item) => ({
+    nearbyLifestyle: doc.nearbyEssentials
+      ?.filter((item) => item?.label)
+      .map((item) => ({
           label: item.label || "Location",
-          value: item.mode ? `${item.time} ${item.mode}` : item.time || "On request",
+          value: item.minutesByCar ? `${item.minutesByCar} min by car` : "On request",
         })) || [],
-    nearbyGuide:
-      doc.nearbyLifestyle
-        ?.filter((item) => item?.label && item?.time)
-        .map((item, index) => ({
+    nearbyGuide: doc.nearbyEssentials
+      ?.filter((item) => item?.label)
+      .map((item, index) => ({
           label: item.label || `Guide Point ${index + 1}`,
-          category: "daily" as const,
-          travelTime: item.time || "On request",
-          travelMode:
-            item.mode === "walk" || item.mode === "cycle" || item.mode === "transit" ? item.mode : "car",
+          category:
+            item.category === "airport" ||
+            item.category === "beach" ||
+            item.category === "school" ||
+            item.category === "healthcare" ||
+            item.category === "golf" ||
+            item.category === "dining" ||
+            item.category === "daily" ||
+            item.category === "marina" ||
+            item.category === "town" ||
+            item.category === "transport"
+              ? item.category
+              : ("daily" as const),
+          travelTime: item.minutesByCar ? `${item.minutesByCar} min` : "On request",
+          travelMode: "car",
           latitude: Number(doc.latitude ?? 36.5) + 0.002 * (index + 1),
           longitude: Number(doc.longitude ?? -4.9) + 0.0015 * (index + 1),
-          description: item.description,
+          description: item.iconType,
         })) || [],
     reasonToView: doc.shortDescription || "Distinctive opportunity in a high-demand area.",
     // Future homepage CMS phase:
     // keep Sanity "featured" + "showOnHomepage" flags in schema to drive homepage sections later.
     reference: doc.reference || "N/A",
-    agentName: doc.advisorName || "Jennifer Fogelberg",
-    agentPhone: doc.advisorPhone || "+34 951 330 870",
-    agentEmail: doc.advisorEmail || "jennifer@cervantes.com",
+    agentName: doc.advisorName || siteConfig.contact.advisorName,
+    agentPhone: doc.advisorPhone || siteConfig.contact.advisorPhone,
+    agentEmail: doc.advisorEmail || siteConfig.contact.advisorEmail,
   };
 }
 

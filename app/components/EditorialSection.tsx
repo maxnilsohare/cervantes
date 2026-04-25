@@ -46,7 +46,7 @@ export function EditorialSection({
             {description}
           </p>
           <a
-            href="#contact"
+            href="/contact"
             className="inline-flex border border-[var(--color-dark-gold)]/70 px-6 py-2.5 text-[11px] font-medium tracking-[0.2em] text-[var(--color-dark-gold)] uppercase hover:-translate-y-0.5 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-cream)]"
           >
             {ctaLabel}

@@ -17,6 +17,23 @@ export const metadata: Metadata = {
   title: "Selling in Spain | Cervantes",
   description:
     "A concise seller guide for owners in the Costa del Sol: pricing, presentation, qualified buyers, and completion.",
+  alternates: {
+    canonical: "/selling-in-spain",
+  },
+  openGraph: {
+    title: "Selling in Spain | Cervantes",
+    description:
+      "A concise seller guide for owners in the Costa del Sol: pricing, presentation, qualified buyers, and completion.",
+    url: "/selling-in-spain",
+    images: ["/images/sell.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Selling in Spain | Cervantes",
+    description:
+      "A concise seller guide for owners in the Costa del Sol: pricing, presentation, qualified buyers, and completion.",
+    images: ["/images/sell.jpg"],
+  },
 };
 
 const trustPoints = ["Discreet marketing", "Qualified buyers", "Founder-led guidance"];
@@ -127,7 +144,7 @@ export default function SellingInSpainPage() {
                   fill
                   className="object-cover object-center"
                   sizes="100vw"
-                  priority
+                  preload
                 />
                 <div className="absolute inset-0 bg-[var(--color-deep-olive)]/50" aria-hidden="true" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
@@ -142,7 +159,7 @@ export default function SellingInSpainPage() {
                     property owners.
                   </p>
                   <Link
-                    href="/#contact"
+                    href="/contact"
                     className="mt-6 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-2.5 text-[11px] tracking-[0.2em] text-[var(--color-deep-olive)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
                   >
                     Request a valuation
@@ -269,7 +286,7 @@ export default function SellingInSpainPage() {
                   thoughtful positioning, and strategic guidance from first conversation to completion.
                 </p>
                 <Link
-                  href="/#contact"
+                  href="/contact"
                   className="mt-6 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-2.5 text-[11px] tracking-[0.2em] text-[var(--color-deep-olive)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
                 >
                   Arrange a private valuation
@@ -304,7 +321,7 @@ export default function SellingInSpainPage() {
             <div className="border border-[var(--color-gold)]/25 bg-[var(--color-deep-olive)] px-6 py-10 text-center sm:px-10 sm:py-12">
               <h2 className="font-serif text-3xl text-[var(--color-ivory)]">Thinking of selling?</h2>
               <Link
-                href="/#contact"
+                href="/contact"
                 className="mt-6 inline-flex border border-[var(--color-gold)] bg-[var(--color-gold)] px-6 py-2.5 text-[11px] tracking-[0.2em] text-[var(--color-deep-olive)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
               >
                 Arrange a private valuation

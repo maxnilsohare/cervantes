@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CTASection } from "@/app/components/CTASection";
 import { Footer } from "@/app/components/Footer";
 import { FounderAdvisorSection } from "@/app/components/FounderAdvisorSection";
@@ -7,12 +6,30 @@ import { Header } from "@/app/components/Header";
 import { Hero } from "@/app/components/Hero";
 import { PropertyCard } from "@/app/components/PropertyCard";
 import { Testimonials } from "@/app/components/Testimonials";
+import { ButtonLink } from "@/app/components/ui/ButtonLink";
 import { properties } from "@/app/data/properties";
 
 export const metadata: Metadata = {
   title: "Cervantes | Boutique Property Advisory",
   description:
     "Cervantes is a boutique property advisory firm offering local knowledge and international expertise for buyers, sellers and investors in premium Spanish real estate.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Cervantes | Boutique Property Advisory",
+    description:
+      "Founder-led property advisory for buying, selling and investing across the Costa del Sol.",
+    url: "/",
+    images: ["/images/hero.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cervantes | Boutique Property Advisory",
+    description:
+      "Founder-led property advisory for buying, selling and investing across the Costa del Sol.",
+    images: ["/images/hero.jpg"],
+  },
 };
 
 export default function Home() {
@@ -35,24 +52,25 @@ export default function Home() {
                 </h2>
               </div>
             </div>
-            <div className="grid gap-7 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
               {properties.map((property) => (
                 <PropertyCard key={property.slug} property={property} />
               ))}
             </div>
             <div className="mt-10 flex justify-center">
-              <Link
+              <ButtonLink
                 href="/properties"
-                className="inline-flex border border-[var(--color-gold)]/70 px-6 py-2.5 text-[11px] font-medium tracking-[0.2em] text-[var(--color-gold)] uppercase hover:-translate-y-0.5 hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)]"
+                variant="outline"
+                className="border-[var(--color-gold)]/70 px-6 py-2.5 text-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-deep-green)]"
               >
                 View all properties
-              </Link>
+              </ButtonLink>
             </div>
           </div>
         </section>
 
         <CTASection
-          id="explore-properties"
+          id="collection"
           label="Curated Collection"
           title="Explore All Properties"
           description="Browse a carefully selected collection of villas, penthouses and new developments across the Costa del Sol."
@@ -62,12 +80,12 @@ export default function Home() {
           imageAlt="Curated luxury homes along the Costa del Sol"
         />
         <CTASection
-          id="sell"
+          id="sell-with-cervantes"
           label="For Owners"
           title="List With Cervantes"
           description="Position your property with discreet marketing, refined presentation and direct founder-led guidance."
           buttonLabel="Arrange a Valuation"
-          buttonHref="/#contact"
+          buttonHref="/selling-in-spain"
           imageSrc="/images/sell.jpg"
           imageAlt="Luxury residence prepared for listing with Cervantes"
         />

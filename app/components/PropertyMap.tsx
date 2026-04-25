@@ -138,30 +138,6 @@ export function PropertyMap({
   }, []);
 
   useEffect(() => {
-    const original = console.error;
-    console.error = (...args: unknown[]) => {
-      const combined = args
-        .map((arg) => (typeof arg === "string" ? arg : ""))
-        .join(" ")
-        .toLowerCase();
-      const isGoogleAuthError =
-        combined.includes("google maps javascript api error") ||
-        combined.includes("apiprojectmaperror") ||
-        combined.includes("noapikeys");
-
-      if (isGoogleAuthError && loaderAttempted) {
-        handleMapFailure(args[0], "Google Maps API authorization failed");
-        return;
-      }
-      original(...args);
-    };
-
-    return () => {
-      console.error = original;
-    };
-  }, [handleMapFailure, loaderAttempted]);
-
-  useEffect(() => {
     const gWindow = window as Window & { gm_authFailure?: () => void };
     const previous = gWindow.gm_authFailure;
     gWindow.gm_authFailure = () => {

@@ -6,7 +6,7 @@ import { useState } from "react";
 type ImageWithFallbackProps = {
   src: string;
   alt: string;
-  priority?: boolean;
+  preload?: boolean;
   className?: string;
   sizes?: string;
 };
@@ -14,7 +14,7 @@ type ImageWithFallbackProps = {
 export function ImageWithFallback({
   src,
   alt,
-  priority = false,
+  preload = false,
   className,
   sizes,
 }: ImageWithFallbackProps) {
@@ -37,7 +37,7 @@ export function ImageWithFallback({
       src={src}
       alt={alt}
       fill
-      priority={priority}
+      preload={preload}
       sizes={sizes}
       className={className}
       onError={() => setFailed(true)}

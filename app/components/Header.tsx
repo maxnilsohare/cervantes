@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { siteConfig } from "@/app/config/site";
 
 const navLinks = [
-  { label: "Properties", href: "/#properties" },
-  { label: "Locations", href: "/#locations" },
+  { label: "Properties", href: "/properties" },
+  { label: "Locations", href: "/properties#locations" },
 ];
 
 const aboutLinks = [
@@ -20,11 +21,6 @@ const languageOptions = [
   { label: "English", code: "EN", flagSrc: "/images/flags/en.png" },
   { label: "Spanish", code: "ES", flagSrc: "/images/flags/es.png" },
   { label: "Swedish", code: "SV", flagSrc: "/images/flags/sv.png" },
-];
-
-const socialOptions = [
-  { label: "Facebook", src: "/images/social/facebook.png" },
-  { label: "Instagram", src: "/images/social/instagram.png" },
 ];
 
 export function Header() {
@@ -72,7 +68,7 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-8 2xl:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-8 xl:flex" aria-label="Primary">
           {navLinks.map((link) => (
             <Link
               key={link.label}
@@ -126,7 +122,7 @@ export function Header() {
             ) : null}
           </div>
           <Link
-            href="/#contact"
+            href="/contact"
             className="text-[13px] font-medium tracking-[0.08em] text-[var(--color-text)] transition-colors hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)]"
           >
             Contact
@@ -136,11 +132,10 @@ export function Header() {
         <div className="hidden items-center gap-3 text-[10px] tracking-[0.08em] text-[var(--color-olive)] uppercase md:flex">
           <div className="hidden items-center gap-1 md:flex">
             {languageOptions.map((lang) => (
-              <button
+              <span
                 key={lang.code}
-                type="button"
                 aria-label={`Language ${lang.label}`}
-                className="inline-flex h-5 min-w-7 items-center justify-center overflow-hidden border border-[var(--color-gold)]/25 bg-[var(--color-ivory)] px-1 text-[9px] tracking-[0.12em] text-[var(--color-olive)] uppercase hover:border-[var(--color-dark-gold)] hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
+                className="inline-flex h-5 min-w-7 items-center justify-center overflow-hidden border border-[var(--color-gold)]/25 bg-[var(--color-ivory)] px-1 text-[9px] tracking-[0.12em] text-[var(--color-olive)] uppercase"
               >
                 <Image
                   src={lang.flagSrc}
@@ -150,51 +145,59 @@ export function Header() {
                   className="mr-1 h-3 w-3 rounded-full object-cover"
                 />
                 {lang.code}
-              </button>
+              </span>
             ))}
           </div>
           <a
-            href="mailto:info@cervantes.com"
+            href={`mailto:${siteConfig.contact.companyEmail}`}
             className="hidden hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] md:inline"
           >
-            info@cervantes.com
+            {siteConfig.contact.companyEmail}
           </a>
           <a
-            href="tel:+34934230320"
+            href={`tel:${siteConfig.contact.companyPhoneHref}`}
             className="hidden hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] md:inline"
           >
-            + 34 934 230 320
+            {siteConfig.contact.companyPhone}
           </a>
-          <div className="hidden items-center gap-2 md:flex">
-            {socialOptions.map((social) => (
-              <button
-                key={social.label}
-                type="button"
-                aria-label={social.label}
-                className="inline-flex h-4 w-4 items-center justify-center text-[var(--color-olive)] transition hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
-              >
-                <Image
-                  src={social.src}
-                  alt={`${social.label} logo`}
-                  width={14}
-                  height={14}
-                  className="h-3.5 w-3.5 object-contain"
-                />
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
+          {siteConfig.socialLinks.length ? (
+            <div className="hidden items-center gap-2 md:flex">
+              {siteConfig.socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={social.label}
+                  className="inline-flex h-4 w-4 items-center justify-center text-[var(--color-olive)] transition hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
+                >
+                  {social.iconSrc ? (
+                    <Image
+                      src={social.iconSrc}
+                      alt=""
+                      width={14}
+                      height={14}
+                      className="h-3.5 w-3.5 object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px]">{social.label.slice(0, 2)}</span>
+                  )}
+                </a>
+              ))}
+            </div>
+          ) : null}
+          <Link
+            href="/properties"
             aria-label="Search"
             className="hidden text-[12px] text-[var(--color-olive)] transition hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] md:inline"
           >
             ⌕
-          </button>
+          </Link>
         </div>
 
         <button
           type="button"
-          className="hidden h-9 w-9 items-center justify-center border border-[var(--color-gold)]/55 text-[var(--color-text)] transition hover:bg-[var(--color-cream)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)] md:inline-flex"
+          className="hidden h-9 w-9 items-center justify-center border border-[var(--color-gold)]/55 text-[var(--color-text)] transition hover:bg-[var(--color-cream)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)] md:inline-flex xl:hidden"
           aria-expanded={menuOpen}
           aria-label="Toggle navigation menu"
           onClick={() => setMenuOpen((prev) => !prev)}
@@ -210,9 +213,9 @@ export function Header() {
           </svg>
         </button>
 
-        <div className="hidden 2xl:block">
+        <div className="hidden xl:block">
           <Link
-            href="/#contact"
+            href="/contact"
             className="inline-flex border border-[var(--color-dark-gold)]/70 px-5 py-2.5 text-[11px] font-medium tracking-[0.2em] text-[var(--color-dark-gold)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)]"
           >
             Enquire Now
@@ -284,14 +287,14 @@ export function Header() {
               ) : null}
             </div>
             <Link
-              href="/#contact"
+              href="/contact"
               onClick={() => setMenuOpen(false)}
               className="text-[13px] font-medium tracking-[0.1em] text-[var(--color-text)] transition-colors hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)]"
             >
               Contact
             </Link>
             <Link
-              href="/#contact"
+              href="/contact"
               onClick={() => setMenuOpen(false)}
               className="mt-2 inline-flex w-fit border border-[var(--color-dark-gold)]/70 px-5 py-2 text-[11px] font-medium tracking-[0.2em] text-[var(--color-dark-gold)] uppercase hover:bg-[var(--color-dark-gold)] hover:text-[var(--color-ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)]"
             >
