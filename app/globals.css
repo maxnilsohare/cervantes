@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --color-cream: #f8f7f2;
+  --color-ivory: #ffffff;
+  --color-gold: #bfa46a;
+  --color-dark-gold: #9c7a33;
+  --color-olive: #3f4724;
+  --color-deep-olive: #222a18;
+  --color-text: #222a18;
+  --color-deep-green: var(--color-deep-olive);
+  --color-forest-green: var(--color-olive);
+  --color-light-gold: var(--color-gold);
+  --color-bronze: var(--color-olive);
+  --background: var(--color-cream);
+  --foreground: var(--color-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+.font-serif {
+  font-family: var(--font-heading), "Helvetica Neue", Arial, sans-serif;
+}
+
+.eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+a,
+button {
+  transition:
+    color 240ms ease,
+    background-color 240ms ease,
+    border-color 240ms ease,
+    transform 240ms ease,
+    opacity 240ms ease;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-gold) 40%, var(--color-ivory));
+  color: var(--color-deep-green);
+}
