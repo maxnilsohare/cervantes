@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadGoogleMaps } from "@/app/lib/googleMapsLoader";
+import {
+  getGoogleMapsBrowserApiKey,
+  hasGoogleMapsBrowserApiKey,
+} from "@/app/lib/googleMapsEnv";
 import type { LucideIcon } from "lucide-react";
 import {
   Anchor,
@@ -119,10 +123,12 @@ export function PropertyMap({
   const [loaderError, setLoaderError] = useState("");
   const hasHandledFailureRef = useRef(false);
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const hasApiKey = Boolean(apiKey);
-  const shouldShowFallback =
-    !hasApiKey || (loaderAttempted && !loaderSuccess && Boolean(loadError || loaderError));
+  const mapsApiKey = getGoogleMapsBrowserApiKey();
+  const hasApiKey = hasGoogleMapsBrowserApiKey();
+  const mapsKeyMissing = !hasApiKey;
+  const mapsLoadFailed =
+    hasApiKey && loaderAttempted && !loaderSuccess && Boolean(loadError || loaderError);
+  const shouldShowFallback = mapsKeyMissing || mapsLoadFailed;
   const filteredGuide =
     guideFilter === "all" ? nearbyGuide : nearbyGuide.filter((item) => item.category === guideFilter);
   const selectedGuideItem = nearbyGuide.find(
@@ -130,14 +136,17 @@ export function PropertyMap({
   );
 
   const handleMapFailure = useCallback((error: unknown, source: string) => {
+    if (!hasGoogleMapsBrowserApiKey()) return;
+    const message = error instanceof Error ? error.message : String(error ?? "Unknown error");
+    if (message.includes("Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY")) return;
     if (hasHandledFailureRef.current) return;
     hasHandledFailureRef.current = true;
     setLoadError("Interactive area map unavailable");
-    const message = error instanceof Error ? error.message : String(error ?? "Unknown error");
     setLoaderError(`${source}: ${message}`);
   }, []);
 
   useEffect(() => {
+    if (!hasGoogleMapsBrowserApiKey()) return;
     const gWindow = window as Window & { gm_authFailure?: () => void };
     const previous = gWindow.gm_authFailure;
     gWindow.gm_authFailure = () => {
@@ -149,7 +158,7 @@ export function PropertyMap({
   }, [handleMapFailure]);
 
   useEffect(() => {
-    if (!apiKey) {
+    if (!mapsApiKey) {
       return;
     }
     if (!mapContainerRef.current) return;
@@ -210,6 +219,8 @@ export function PropertyMap({
         setMapReady(true);
       } catch (error) {
         if (!cancelled) {
+          const msg = error instanceof Error ? error.message : String(error ?? "");
+          if (msg.includes("Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY")) return;
           handleMapFailure(error, "Google Maps library failed to load");
         }
       }
@@ -228,7 +239,7 @@ export function PropertyMap({
       mapRef.current = null;
       streetViewRef.current = null;
     };
-  }, [apiKey, handleMapFailure, latitude, location, longitude]);
+  }, [mapsApiKey, handleMapFailure, latitude, location, longitude]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -517,6 +528,11 @@ export function PropertyMap({
             <p className="font-serif text-2xl text-[var(--color-deep-olive)]">
               Interactive area map unavailable
             </p>
+            {mapsKeyMissing ? (
+              <p className="mt-2 text-xs tracking-wide text-[var(--color-olive)]/85">
+                Maps key missing in this deployment
+              </p>
+            ) : null}
             <p className="mt-2 text-sm leading-relaxed text-[var(--color-text)]">
               Add a valid Google Maps API key with Maps JavaScript API enabled to view the area map,
               satellite mode and Street View.

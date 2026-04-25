@@ -1,4 +1,5 @@
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
+import { getGoogleMapsBrowserApiKey } from "@/app/lib/googleMapsEnv";
 
 let hasInitialized = false;
 let initializedKeyPrefix = "";
@@ -6,7 +7,7 @@ let mapsLibraryPromise: Promise<google.maps.MapsLibrary> | null = null;
 let placesLibraryPromise: Promise<google.maps.PlacesLibrary> | null = null;
 
 export async function loadGoogleMaps() {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = getGoogleMapsBrowserApiKey();
   if (!apiKey) {
     throw new Error("Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY");
   }
@@ -33,7 +34,7 @@ export async function loadGoogleMaps() {
 }
 
 export async function loadGooglePlaces() {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = getGoogleMapsBrowserApiKey();
   if (!apiKey) {
     throw new Error("Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY");
   }
