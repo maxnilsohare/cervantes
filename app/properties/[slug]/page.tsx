@@ -37,22 +37,22 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
   }
 
   return {
-    title: `${property.title} | Cervantes`,
-    description: property.shortDescription,
+    title: property.seoTitle || `${property.title} | Cervantes`,
+    description: property.seoDescription || property.shortDescription,
     alternates: {
       canonical: `/properties/${property.slug}`,
     },
     openGraph: {
-      title: `${property.title} | Cervantes`,
-      description: property.shortDescription,
+      title: property.seoTitle || `${property.title} | Cervantes`,
+      description: property.seoDescription || property.shortDescription,
       url: `/properties/${property.slug}`,
-      images: [property.heroImage],
+      images: [property.ogImage || property.heroImage],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${property.title} | Cervantes`,
-      description: property.shortDescription,
-      images: [property.heroImage],
+      title: property.seoTitle || `${property.title} | Cervantes`,
+      description: property.seoDescription || property.shortDescription,
+      images: [property.ogImage || property.heroImage],
     },
   };
 }

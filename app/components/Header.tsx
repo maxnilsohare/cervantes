@@ -5,10 +5,13 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/app/config/site";
 
-const navLinks = [
-  { label: "Properties", href: "/properties" },
-  { label: "Locations", href: "/properties#locations" },
+const propertiesMenuLinks = [
+  { label: "All Properties", href: "/properties" },
+  { label: "Property Map", href: "/properties/map" },
+  { label: "New Developments", href: "/properties?type=new%20development" },
 ];
+
+const navLinks = [{ label: "Locations", href: "/properties#locations" }];
 
 const aboutLinks = [
   { label: "Company", href: "/about" },
@@ -25,14 +28,24 @@ const languageOptions = [
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [desktopPropertiesOpen, setDesktopPropertiesOpen] = useState(false);
+  const [mobilePropertiesOpen, setMobilePropertiesOpen] = useState(false);
   const [desktopAboutOpen, setDesktopAboutOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const aboutCloseTimeoutRef = useRef<number | null>(null);
+  const propertiesCloseTimeoutRef = useRef<number | null>(null);
 
   function clearAboutCloseTimeout() {
     if (aboutCloseTimeoutRef.current !== null) {
       window.clearTimeout(aboutCloseTimeoutRef.current);
       aboutCloseTimeoutRef.current = null;
+    }
+  }
+
+  function clearPropertiesCloseTimeout() {
+    if (propertiesCloseTimeoutRef.current !== null) {
+      window.clearTimeout(propertiesCloseTimeoutRef.current);
+      propertiesCloseTimeoutRef.current = null;
     }
   }
 
@@ -49,9 +62,23 @@ export function Header() {
     }, 220);
   }
 
+  function openDesktopProperties() {
+    clearPropertiesCloseTimeout();
+    setDesktopPropertiesOpen(true);
+  }
+
+  function scheduleDesktopPropertiesClose() {
+    clearPropertiesCloseTimeout();
+    propertiesCloseTimeoutRef.current = window.setTimeout(() => {
+      setDesktopPropertiesOpen(false);
+      propertiesCloseTimeoutRef.current = null;
+    }, 220);
+  }
+
   useEffect(() => {
     return () => {
       clearAboutCloseTimeout();
+      clearPropertiesCloseTimeout();
     };
   }, []);
 
@@ -69,6 +96,49 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 xl:flex" aria-label="Primary">
+          <div
+            className="relative"
+            onMouseEnter={openDesktopProperties}
+            onMouseLeave={scheduleDesktopPropertiesClose}
+            onFocusCapture={openDesktopProperties}
+            onBlurCapture={(event) => {
+              const next = event.relatedTarget as Node | null;
+              if (!event.currentTarget.contains(next)) {
+                scheduleDesktopPropertiesClose();
+              }
+            }}
+          >
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={desktopPropertiesOpen}
+              className="inline-flex items-center gap-1 text-[13px] font-medium tracking-[0.08em] text-[var(--color-text)] transition-colors hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)]"
+            >
+              Properties
+              <span aria-hidden="true" className="text-[10px] leading-none">
+                ▾
+              </span>
+            </button>
+            {desktopPropertiesOpen ? (
+              <div
+                role="menu"
+                className="absolute left-0 top-full mt-3 min-w-[240px] border-t border-[var(--color-gold)] border-x border-b border-[var(--color-gold)]/25 bg-[var(--color-ivory)] p-2 shadow-[0_16px_32px_-22px_rgba(34,42,24,0.5)]"
+                onMouseEnter={openDesktopProperties}
+                onMouseLeave={scheduleDesktopPropertiesClose}
+              >
+                {propertiesMenuLinks.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    role="menuitem"
+                    className="block px-3 py-2 text-[12px] tracking-[0.1em] text-[var(--color-text)] transition hover:bg-[var(--color-cream)] hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
           {navLinks.map((link) => (
             <Link
               key={link.label}
@@ -244,6 +314,38 @@ export function Header() {
       {menuOpen ? (
         <div className="border-t border-[var(--color-gold)]/20 bg-[var(--color-ivory)] px-5 py-5 xl:hidden">
           <nav className="flex flex-col gap-4" aria-label="Mobile primary">
+            <div className="border-b border-[var(--color-gold)]/18 pb-3">
+              <button
+                type="button"
+                aria-expanded={mobilePropertiesOpen}
+                aria-haspopup="menu"
+                onClick={() => setMobilePropertiesOpen((prev) => !prev)}
+                className="inline-flex w-full items-center justify-between text-[13px] font-medium tracking-[0.1em] text-[var(--color-text)] transition-colors hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-ivory)]"
+              >
+                Properties
+                <span aria-hidden="true" className="text-[10px] leading-none">
+                  {mobilePropertiesOpen ? "▴" : "▾"}
+                </span>
+              </button>
+              {mobilePropertiesOpen ? (
+                <div role="menu" className="mt-2 flex flex-col gap-2 pl-3">
+                  {propertiesMenuLinks.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      role="menuitem"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setMobilePropertiesOpen(false);
+                      }}
+                      className="text-[12px] tracking-[0.1em] text-[var(--color-olive)] transition hover:text-[var(--color-dark-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.label}

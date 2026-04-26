@@ -27,6 +27,8 @@ export type Property = {
   rentalEstimateLow: string;
   rentalEstimateHigh: string;
   confidence: "Low" | "Medium" | "High";
+  /** When true, hide from the aggregate /properties/map (e.g. CMS entries without coordinates). */
+  omitFromAggregateMap?: boolean;
   latitude: number;
   longitude: number;
   nearbyValues: {
@@ -70,6 +72,10 @@ export type Property = {
   agentName: string;
   agentPhone: string;
   agentEmail: string;
+  agentPhoto?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: string;
 };
 
 export const properties: Property[] = [
@@ -261,6 +267,7 @@ export const properties: Property[] = [
     agentName: siteConfig.contact.advisorName,
     agentPhone: siteConfig.contact.advisorPhone,
     agentEmail: siteConfig.contact.advisorEmail,
+    agentPhoto: "/images/agent.jpg",
   },
   {
     slug: "beachfront-duplex-penthouse-torre-bermeja",
@@ -450,6 +457,7 @@ export const properties: Property[] = [
     agentName: siteConfig.contact.advisorName,
     agentPhone: siteConfig.contact.advisorPhone,
     agentEmail: siteConfig.contact.advisorEmail,
+    agentPhoto: "/images/agent.jpg",
   },
   {
     slug: "villa-madrisa-nueva-andalucia",
@@ -638,6 +646,7 @@ export const properties: Property[] = [
     agentName: siteConfig.contact.advisorName,
     agentPhone: siteConfig.contact.advisorPhone,
     agentEmail: siteConfig.contact.advisorEmail,
+    agentPhoto: "/images/agent.jpg",
   },
 ];
 

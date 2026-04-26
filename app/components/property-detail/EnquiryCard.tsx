@@ -87,7 +87,7 @@ export function EnquiryCard({ property }: EnquiryCardProps) {
           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[var(--color-gold)]/45 bg-[var(--color-cream)] p-[2px]">
             {!imageErrored ? (
               <Image
-                src="/images/agent.jpg"
+                src={property.agentPhoto || "/images/agent.jpg"}
                 alt={`${property.agentName} profile`}
                 fill
                 sizes="64px"

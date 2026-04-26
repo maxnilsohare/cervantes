@@ -64,6 +64,10 @@ function mapStatus(status?: SanityProperty["status"]) {
 function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
   if (!doc.slug || !doc.title || !doc.price || !doc.location) return null;
 
+  const latNum = doc.latitude != null ? Number(doc.latitude) : NaN;
+  const lngNum = doc.longitude != null ? Number(doc.longitude) : NaN;
+  const hasRealCoords = Number.isFinite(latNum) && Number.isFinite(lngNum);
+
   return {
     slug: doc.slug,
     title: doc.title,
@@ -91,8 +95,9 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
     rentalEstimateLow: "On request",
     rentalEstimateHigh: "On request",
     confidence: "Medium",
-    latitude: Number(doc.latitude ?? 36.5),
-    longitude: Number(doc.longitude ?? -4.9),
+    omitFromAggregateMap: !hasRealCoords,
+    latitude: hasRealCoords ? latNum : 36.5,
+    longitude: hasRealCoords ? lngNum : -4.9,
     nearbyValues: [],
     communityFees: doc.communityFees,
     specialHighlights:
@@ -173,6 +178,10 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
     agentName: doc.advisorName || siteConfig.contact.advisorName,
     agentPhone: doc.advisorPhone || siteConfig.contact.advisorPhone,
     agentEmail: doc.advisorEmail || siteConfig.contact.advisorEmail,
+    agentPhoto: doc.advisorImageUrl || "/images/agent.jpg",
+    seoTitle: doc.seoTitle,
+    seoDescription: doc.seoDescription,
+    ogImage: doc.ogImageUrl,
   };
 }
 
