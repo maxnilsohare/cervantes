@@ -15,6 +15,7 @@ Public browser-safe variables:
 Server-only variables:
 
 - `ENABLE_STUDIO=false`
+- `GOOGLE_MAPS_SERVER_API_KEY`
 - `ENQUIRY_MAIL_PROVIDER=resend` or `sendgrid`
 - `ENQUIRY_RECIPIENT_EMAIL=hello@cervantesadvisory.com`
 - `ENQUIRY_FROM_EMAIL=Cervantes Website <noreply@your-domain.com>`
@@ -41,6 +42,12 @@ Restrict `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in Google Cloud before production:
 - Add production domains such as `https://your-domain.com/*` and `https://www.your-domain.com/*`.
 - Add Vercel preview domains only if previews need maps.
 - API restriction: Maps JavaScript API. Add Places API only if a future feature needs it.
+
+For property enrichment in Sanity Studio, `GOOGLE_MAPS_SERVER_API_KEY` must be server-only and allow:
+
+- Geocoding API
+- Places API
+- (Optional) Distance Matrix API if you later want exact drive-time values
 
 The property map uses standard `google.maps.Map` and `google.maps.Marker`, and falls back gracefully when the key is missing or authorization fails.
 

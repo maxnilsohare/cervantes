@@ -9,12 +9,12 @@ import {
 import type { LucideIcon } from "lucide-react";
 import {
   Anchor,
-  Cross,
+  Building2,
   Flag,
   GraduationCap,
-  Landmark,
+  HeartPulse,
   Plane,
-  ShoppingCart,
+  ShoppingBasket,
   Train,
   Utensils,
   Waves,
@@ -30,13 +30,13 @@ type PropertyMapProps = {
       | "airport"
       | "beach"
       | "school"
-      | "healthcare"
+      | "hospital"
       | "golf"
-      | "dining"
-      | "daily"
+      | "restaurant"
+      | "supermarket"
       | "marina"
       | "town"
-      | "transport";
+      | "train";
     travelTime: string;
     travelMode: "car" | "walk" | "cycle" | "transit";
     latitude: number;
@@ -49,13 +49,13 @@ type GuideCategory =
   | "airport"
   | "beach"
   | "school"
-  | "healthcare"
+  | "hospital"
   | "golf"
-  | "dining"
-  | "daily"
+  | "restaurant"
+  | "supermarket"
   | "marina"
   | "town"
-  | "transport";
+  | "train";
 
 type GuideFilter = "all" | GuideCategory;
 
@@ -64,10 +64,10 @@ const GUIDE_FILTER_OPTIONS: { id: GuideFilter; label: string }[] = [
   { id: "airport", label: "Airport" },
   { id: "beach", label: "Beach" },
   { id: "school", label: "Schools" },
-  { id: "healthcare", label: "Healthcare" },
+  { id: "hospital", label: "Hospitals" },
   { id: "golf", label: "Golf" },
-  { id: "dining", label: "Dining" },
-  { id: "daily", label: "Daily Essentials" },
+  { id: "restaurant", label: "Restaurants" },
+  { id: "supermarket", label: "Supermarkets" },
 ];
 
 const GUIDE_CATEGORY_META: Record<
@@ -77,26 +77,26 @@ const GUIDE_CATEGORY_META: Record<
   airport: { markerLabel: "A", color: "#F8F7F2", border: "#9C7A33" },
   beach: { markerLabel: "B", color: "#F8F7F2", border: "#BFA46A" },
   school: { markerLabel: "S", color: "#F8F7F2", border: "#3F4724" },
-  healthcare: { markerLabel: "H", color: "#F8F7F2", border: "#7F8B66" },
+  hospital: { markerLabel: "H", color: "#F8F7F2", border: "#7F8B66" },
   golf: { markerLabel: "G", color: "#F8F7F2", border: "#2F5B3A" },
-  dining: { markerLabel: "D", color: "#F8F7F2", border: "#8A6A3A" },
-  daily: { markerLabel: "E", color: "#F8F7F2", border: "#6C7A4E" },
+  restaurant: { markerLabel: "R", color: "#F8F7F2", border: "#8A6A3A" },
+  supermarket: { markerLabel: "S", color: "#F8F7F2", border: "#6C7A4E" },
   marina: { markerLabel: "M", color: "#F8F7F2", border: "#4D6E8B" },
   town: { markerLabel: "T", color: "#F8F7F2", border: "#5E5E5E" },
-  transport: { markerLabel: "R", color: "#F8F7F2", border: "#7A6D5F" },
+  train: { markerLabel: "T", color: "#F8F7F2", border: "#7A6D5F" },
 };
 
 const GUIDE_CATEGORY_ICONS: Record<GuideCategory, LucideIcon> = {
   airport: Plane,
   beach: Waves,
   school: GraduationCap,
-  healthcare: Cross,
+  hospital: HeartPulse,
   golf: Flag,
-  dining: Utensils,
-  daily: ShoppingCart,
+  restaurant: Utensils,
+  supermarket: ShoppingBasket,
   marina: Anchor,
-  town: Landmark,
-  transport: Train,
+  town: Building2,
+  train: Train,
 };
 
 export function PropertyMap({
@@ -514,11 +514,6 @@ export function PropertyMap({
                     </button>
                   </article>
                 ))}
-                {!filteredGuide.length ? (
-                  <p className="text-sm text-[var(--color-olive)]/80">
-                    No curated points are set for this category yet.
-                  </p>
-                ) : null}
               </div>
             </section>
 

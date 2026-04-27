@@ -54,13 +54,13 @@ export type Property = {
       | "airport"
       | "beach"
       | "school"
-      | "healthcare"
+      | "hospital"
       | "golf"
-      | "dining"
-      | "daily"
+      | "restaurant"
+      | "supermarket"
       | "marina"
       | "town"
-      | "transport";
+      | "train";
     travelTime: string;
     travelMode: "car" | "walk" | "cycle" | "transit";
     latitude: number;
@@ -73,6 +73,7 @@ export type Property = {
   agentPhone: string;
   agentEmail: string;
   agentPhoto?: string;
+  agentWhatsappNumber?: string;
   seoTitle?: string;
   seoDescription?: string;
   ogImage?: string;
@@ -223,7 +224,7 @@ export const properties: Property[] = [
       },
       {
         label: "Xanit Hospital",
-        category: "healthcare",
+        category: "hospital",
         travelTime: "9 mins",
         travelMode: "car",
         latitude: 36.5908,
@@ -247,7 +248,7 @@ export const properties: Property[] = [
       },
       {
         label: "Mercadona",
-        category: "daily",
+        category: "supermarket",
         travelTime: "5 mins",
         travelMode: "car",
         latitude: 36.5727,
@@ -413,7 +414,7 @@ export const properties: Property[] = [
       },
       {
         label: "Hospiten Estepona",
-        category: "healthcare",
+        category: "hospital",
         travelTime: "16 mins",
         travelMode: "car",
         latitude: 36.4267,
@@ -437,7 +438,7 @@ export const properties: Property[] = [
       },
       {
         label: "Local Gourmet Dining",
-        category: "dining",
+        category: "restaurant",
         travelTime: "6 mins",
         travelMode: "car",
         latitude: 36.4751,
@@ -602,7 +603,7 @@ export const properties: Property[] = [
       },
       {
         label: "HC Marbella",
-        category: "healthcare",
+        category: "hospital",
         travelTime: "11 mins",
         travelMode: "car",
         latitude: 36.505,
@@ -626,7 +627,7 @@ export const properties: Property[] = [
       },
       {
         label: "Supermarket",
-        category: "daily",
+        category: "supermarket",
         travelTime: "5 mins",
         travelMode: "car",
         latitude: 36.4975,

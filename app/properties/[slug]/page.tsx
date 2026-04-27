@@ -104,12 +104,14 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
           <div className="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(250px,290px)] lg:items-start">
             <div>
               <PropertyFacts property={property} />
-              <PropertyMap
-                location={property.location}
-                latitude={property.latitude}
-                longitude={property.longitude}
-                nearbyGuide={property.nearbyGuide}
-              />
+              {property.nearbyGuide.length ? (
+                <PropertyMap
+                  location={property.location}
+                  latitude={property.latitude}
+                  longitude={property.longitude}
+                  nearbyGuide={property.nearbyGuide}
+                />
+              ) : null}
               <BuyingCostCalculator
                 propertyPrice={property.price}
                 listedCommunityFees={property.communityFees}

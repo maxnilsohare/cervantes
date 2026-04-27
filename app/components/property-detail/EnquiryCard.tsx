@@ -32,7 +32,7 @@ export function EnquiryCard({ property }: EnquiryCardProps) {
       ? siteConfig.contact.advisorPhoneHref
       : advisorPhone.replace(/[^\d+]/g, "");
   const advisorEmail = property.agentEmail || siteConfig.contact.advisorEmail;
-  const advisorWhatsAppNumber = siteConfig.contact.whatsappHrefNumber;
+  const advisorWhatsAppNumber = property.agentWhatsappNumber || siteConfig.contact.whatsappHrefNumber;
   const advisorInitials = useMemo(() => {
     return property.agentName
       .split(" ")

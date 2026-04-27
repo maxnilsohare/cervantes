@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { PropertyEnrichmentInput } from "@/sanity/components/PropertyEnrichmentInput";
 
 const PROPERTY_TYPE_OPTIONS = [
   { title: "Apartment", value: "Apartment" },
@@ -21,14 +22,14 @@ const STATUS_OPTIONS = [
 const NEARBY_CATEGORY_OPTIONS = [
   { title: "Airport", value: "airport" },
   { title: "Beach", value: "beach" },
-  { title: "School", value: "school" },
-  { title: "Healthcare", value: "healthcare" },
+  { title: "International school", value: "international-school" },
+  { title: "Hospital / clinic", value: "hospital-clinic" },
   { title: "Golf", value: "golf" },
-  { title: "Dining", value: "dining" },
-  { title: "Daily essentials", value: "daily" },
+  { title: "Supermarket", value: "supermarket" },
   { title: "Marina", value: "marina" },
-  { title: "Town", value: "town" },
-  { title: "Transport", value: "transport" },
+  { title: "Town centre", value: "town-centre" },
+  { title: "Restaurants / lifestyle", value: "restaurants-lifestyle" },
+  { title: "Train station", value: "train-station" },
 ];
 
 export const propertyType = defineType({
@@ -273,7 +274,11 @@ export const propertyType = defineType({
       title: "Address",
       type: "string",
       group: "map",
-      description: "Optional. Use a broad address if you do not want to show the exact home location publicly.",
+      description:
+        "Add the property address, then use the button below to find coordinates and nearby essentials automatically.",
+      components: {
+        input: PropertyEnrichmentInput,
+      },
     }),
     defineField({
       name: "latitude",
@@ -303,41 +308,61 @@ export const propertyType = defineType({
           fields: [
             defineField({
               name: "label",
-              title: "Place name",
+              title: "Name",
               type: "string",
               validation: (rule) => rule.required(),
             }),
             defineField({
               name: "category",
-              title: "Category",
+              title: "Type",
               type: "string",
               options: { list: NEARBY_CATEGORY_OPTIONS },
               validation: (rule) => rule.required(),
             }),
             defineField({
-              name: "minutesByCar",
+              name: "travelTimeMinutes",
               title: "Minutes by car",
               type: "number",
               validation: (rule) => rule.min(0).precision(0),
             }),
             defineField({
-              name: "iconType",
-              title: "Optional icon label",
+              name: "distanceKm",
+              title: "Distance",
+              type: "number",
+              validation: (rule) => rule.min(0),
+            }),
+            defineField({
+              name: "latitude",
+              title: "Latitude",
+              type: "number",
+            }),
+            defineField({
+              name: "longitude",
+              title: "Longitude",
+              type: "number",
+            }),
+            defineField({
+              name: "note",
+              title: "Optional note",
               type: "string",
-              description: "Optional helper label for the frontend map and nearby guide.",
             }),
           ],
           preview: {
             select: {
               title: "label",
               category: "category",
-              minutesByCar: "minutesByCar",
+              travelTimeMinutes: "travelTimeMinutes",
+              distanceKm: "distanceKm",
             },
             prepare(selection) {
-              const { title, category, minutesByCar } = selection;
+              const { title, category, travelTimeMinutes, distanceKm } = selection;
               return {
                 title,
-                subtitle: [category, minutesByCar ? `${minutesByCar} min by car` : null]
+                subtitle: [
+                  category,
+                  travelTimeMinutes ? `${travelTimeMinutes} min by car` : null,
+                  typeof distanceKm === "number" ? `${distanceKm.toFixed(1)} km` : null,
+                ]
                   .filter(Boolean)
                   .join(" · "),
               };
@@ -348,11 +373,22 @@ export const propertyType = defineType({
     }),
 
     defineField({
+      name: "advisor",
+      title: "Advisor profile",
+      type: "reference",
+      to: [{ type: "advisor" }],
+      group: "advisor",
+      description: "Select the advisor profile for this listing.",
+      initialValue: {
+        _ref: "advisor-jennifer",
+      },
+    }),
+    defineField({
       name: "advisorDetails",
-      title: "Advisor details",
+      title: "Legacy advisor details",
       type: "object",
       group: "advisor",
-      description: "The estate agent will use these contact details on this property page.",
+      hidden: true,
       fields: [
         defineField({
           name: "name",
@@ -380,13 +416,6 @@ export const propertyType = defineType({
           fields: [defineField({ name: "alt", title: "Alt text", type: "string" })],
         }),
       ],
-    }),
-    defineField({
-      name: "advisor",
-      title: "Legacy advisor reference",
-      type: "reference",
-      to: [{ type: "advisor" }],
-      hidden: true,
     }),
 
     defineField({

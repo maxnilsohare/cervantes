@@ -44,6 +44,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
 NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_public_browser_maps_key
+GOOGLE_MAPS_SERVER_API_KEY=your_server_only_maps_key
 ```
 
 3. Start the app:
@@ -61,14 +63,25 @@ If Sanity is not configured yet, the site safely falls back to local property da
 1. Open the website admin at `/studio`.
 2. Log in with your Sanity account.
 3. In the left menu, click **Property** and then **Create new**.
-4. Fill in the property sections:
-   - Core details (title, slug, status, reference, price, location)
-   - Stats (beds, baths, sizes)
-   - Images (hero and gallery)
-   - Descriptions and Cervantes View
-   - What&apos;s Special, Features and Lifestyle Highlights
-   - Map and Nearby Lifestyle fields
-   - Advisor details and SEO
-5. Click **Publish**.
-6. Visit `/properties` on the website to confirm the listing appears.
-7. Open that property page to verify full detail layout, map and travel-time tools.
+4. Add the property title and address.
+5. Click **Find coordinates and nearby essentials** in the Address field.
+6. Review and adjust the suggested map points (name, type, minutes, distance, note).
+7. Choose an **Advisor profile** in the Advisor tab.
+8. Fill in the rest of the listing content (media, facts, descriptions, publishing).
+9. Click **Publish**.
+10. Visit `/properties` and the property detail page to confirm listing and map rendering.
+
+## How to create the default advisor (Jennifer)
+
+1. Open `/studio`.
+2. Go to **Advisors** and click **Create new**.
+3. Add:
+   - Name: Jennifer
+   - Slug: auto-generated from name
+   - Phone + Email
+   - Languages: **Swedish**, **English**, **Spanish**
+   - Optional photo, WhatsApp number, and short bio
+   - Enable **Default advisor**
+4. Publish the advisor.
+5. Optional (recommended): in the document actions menu, copy document ID and set it to `advisor-jennifer` so new properties auto-select this advisor.
+

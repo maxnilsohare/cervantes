@@ -36,8 +36,11 @@ type SanityProperty = {
   nearbyEssentials?: {
     label?: string;
     category?: string;
-    minutesByCar?: number;
-    iconType?: string;
+    travelTimeMinutes?: number;
+    distanceKm?: number;
+    latitude?: number;
+    longitude?: number;
+    note?: string;
   }[];
   estimatedIBI?: string;
   communityFees?: number;
@@ -46,6 +49,9 @@ type SanityProperty = {
   advisorPhone?: string;
   advisorEmail?: string;
   advisorImageUrl?: string;
+  advisorWhatsappNumber?: string;
+  advisorLanguages?: string[];
+  advisorShortBio?: string;
   seoTitle?: string;
   seoDescription?: string;
   ogImageUrl?: string;
@@ -67,6 +73,59 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
   const latNum = doc.latitude != null ? Number(doc.latitude) : NaN;
   const lngNum = doc.longitude != null ? Number(doc.longitude) : NaN;
   const hasRealCoords = Number.isFinite(latNum) && Number.isFinite(lngNum);
+
+  const nearbyGuide =
+    doc.nearbyEssentials
+      ?.filter(
+        (item) =>
+          item?.label &&
+          Number.isFinite(Number(item.latitude)) &&
+          Number.isFinite(Number(item.longitude))
+      )
+      .map((item, index) => {
+        const rawCategory = item.category || "";
+        const category: Property["nearbyGuide"][number]["category"] =
+          rawCategory === "airport"
+            ? "airport"
+            : rawCategory === "beach"
+              ? "beach"
+              : rawCategory === "international-school"
+                ? "school"
+                : rawCategory === "hospital-clinic"
+                  ? "hospital"
+                  : rawCategory === "golf"
+                    ? "golf"
+                    : rawCategory === "supermarket"
+                      ? "supermarket"
+                      : rawCategory === "marina"
+                        ? "marina"
+                        : rawCategory === "town-centre"
+                          ? "town"
+                          : rawCategory === "restaurants-lifestyle"
+                            ? "restaurant"
+                            : rawCategory === "train-station"
+                              ? "train"
+                              : "supermarket";
+
+        const minutes = Number(item.travelTimeMinutes);
+        const distanceKm = Number(item.distanceKm);
+        const timeLabel =
+          Number.isFinite(minutes) && minutes > 0
+            ? `${Math.round(minutes)} min`
+            : Number.isFinite(distanceKm) && distanceKm > 0
+              ? `${distanceKm.toFixed(1)} km`
+              : "On request";
+
+        return {
+          label: item.label || `Nearby Point ${index + 1}`,
+          category,
+          travelTime: timeLabel,
+          travelMode: "car" as const,
+          latitude: Number(item.latitude),
+          longitude: Number(item.longitude),
+          description: item.note,
+        };
+      }) || [];
 
   return {
     slug: doc.slug,
@@ -146,31 +205,9 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
       ?.filter((item) => item?.label)
       .map((item) => ({
           label: item.label || "Location",
-          value: item.minutesByCar ? `${item.minutesByCar} min by car` : "On request",
+          value: item.travelTimeMinutes ? `${item.travelTimeMinutes} min by car` : "On request",
         })) || [],
-    nearbyGuide: doc.nearbyEssentials
-      ?.filter((item) => item?.label)
-      .map((item, index) => ({
-          label: item.label || `Guide Point ${index + 1}`,
-          category:
-            item.category === "airport" ||
-            item.category === "beach" ||
-            item.category === "school" ||
-            item.category === "healthcare" ||
-            item.category === "golf" ||
-            item.category === "dining" ||
-            item.category === "daily" ||
-            item.category === "marina" ||
-            item.category === "town" ||
-            item.category === "transport"
-              ? item.category
-              : ("daily" as const),
-          travelTime: item.minutesByCar ? `${item.minutesByCar} min` : "On request",
-          travelMode: "car",
-          latitude: Number(doc.latitude ?? 36.5) + 0.002 * (index + 1),
-          longitude: Number(doc.longitude ?? -4.9) + 0.0015 * (index + 1),
-          description: item.iconType,
-        })) || [],
+    nearbyGuide,
     reasonToView: doc.shortDescription || "Distinctive opportunity in a high-demand area.",
     // Future homepage CMS phase:
     // keep Sanity "featured" + "showOnHomepage" flags in schema to drive homepage sections later.
@@ -179,6 +216,7 @@ function mapSanityPropertyToAppProperty(doc: SanityProperty): Property | null {
     agentPhone: doc.advisorPhone || siteConfig.contact.advisorPhone,
     agentEmail: doc.advisorEmail || siteConfig.contact.advisorEmail,
     agentPhoto: doc.advisorImageUrl || "/images/agent.jpg",
+    agentWhatsappNumber: doc.advisorWhatsappNumber || siteConfig.contact.whatsappHrefNumber,
     seoTitle: doc.seoTitle,
     seoDescription: doc.seoDescription,
     ogImage: doc.ogImageUrl,
